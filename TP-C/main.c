@@ -4,9 +4,10 @@ void ChargerPersonnes();
 
 typedef struct
 {
-    char id[150]
-    char nomPrenom[150]
+    char id[150];
+    char nomPrenom[150];
     char sexe;
+    int nbEnfants;
     char enfants[];
 
 }Personne;
@@ -22,7 +23,7 @@ void ChargerPersonnes()
     char line[1024];
     char * pch;
     int i,j = 0;
-    Client unClient;
+    Personne * unePersonne = malloc(countLineInFile("personnes.csv"));
 
     FILE* fichier = fopen("personnes.csv", "r");
     if(fichier != NULL)
@@ -72,4 +73,19 @@ void ChargerPersonnes()
     strcpy(unClient.profession, "0");
     strcpy(unClient.telephone, "0");
     return unClient;
+}
+
+int countLineInFile(char * filename)
+{
+    int count = 0;
+    char line[1024];
+    FILE* fichier = fopen(filename, "r");
+    if(fichier != NULL)
+    {
+        while (fgets(line, 1024, fichier))
+        {
+            count++;
+        }
+    }
+    return count;
 }
