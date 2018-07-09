@@ -1,35 +1,41 @@
 #include <stdio.h>
 #include <stdlib.h>
-void ChargerPersonnes();
-
 typedef struct
 {
     char id[150];
     char nomPrenom[150];
+    char dateNaissance[20];
     char sexe;
     int nbEnfants;
     char enfants[];
 
 }Personne;
 
+Personne * ChargerPersonnes();
+int countLineInFile(char * filename);
+int charcount(char * filename);
+
 int main()
 {
-
+    Personne * lesPersonnes = malloc(countLineInFile("personnes.csv") * sizeof(Personne));
+    lesPersonnes = ChargerPersonnes();
     return 0;
 }
 
-void ChargerPersonnes()
+Personne * ChargerPersonnes()
 {
-    char line[1024];
+    char * line = malloc(charcount("personnes.csv") * sizeof(char));
     char * pch;
     int i,j = 0;
-    Personne * unePersonne = malloc(countLineInFile("personnes.csv"));
+    Personne unePersonne;
+    Personne * lesPersonnes = malloc(countLineInFile("personnes.csv") * sizeof(Personne));
 
     FILE* fichier = fopen("personnes.csv", "r");
     if(fichier != NULL)
     {
-        while (fgets(line, 1024, fichier))
+        while (fgets(line, charcount("personnes.csv") * sizeof(char), fichier))
         {
+            printf("ok1");
             char* tmp = strdup(line);
             pch = strtok (tmp,";"); //premiere fois pour trouver le delimiter
 
@@ -38,25 +44,19 @@ void ChargerPersonnes()
                 switch(j)
                 {
                     case 0:
-                        unClient.id = atoi(pch);
+                        strcpy(unePersonne.id,pch);
                     case 1:
-                        strcpy(unClient.nom,pch);
+                        strcpy(unePersonne.nomPrenom,pch);
                     case 2:
-                        strcpy(unClient.prenom,pch);
+                        strcpy(unePersonne.dateNaissance,pch);
                     case 3:
-                        strcpy(unClient.profession,pch);
-                    case 4:
-                        strcpy(unClient.telephone,pch);
+                        unePersonne.nbEnfants = atoi(pch);
                 }
                 j++;
                 pch = strtok (NULL, ";");
             }
 
-            if(unClient.id == id)
-            {
-                fclose(fichier);
-                return unClient;
-            }
+            lesPersonnes[i] = unePersonne;
 
             free(tmp);
             i++;
@@ -65,14 +65,7 @@ void ChargerPersonnes()
     }
 
     fclose(fichier);
-
-    //Si aucun client n'esst trouvé, on met toutes les valeurs de client à 0, pour ne pas retourner le dernier de la liste
-    unClient.id = 0;
-    strcpy(unClient.nom, "0");
-    strcpy(unClient.prenom, "0");
-    strcpy(unClient.profession, "0");
-    strcpy(unClient.telephone, "0");
-    return unClient;
+    return lesPersonnes;
 }
 
 int countLineInFile(char * filename)
@@ -87,5 +80,23 @@ int countLineInFile(char * filename)
             count++;
         }
     }
+    return count;
+}
+
+int charcount(char * filename)
+{
+    FILE *fin;
+    fin = fopen(filename, "r" );
+    int c, count;
+
+    count = 0;
+    for( ;; )
+    {
+        c = fgetc( fin );
+        if( c == EOF || c == '\n' )
+            break;
+        ++count;
+    }
+    fclose(fin);
     return count;
 }
