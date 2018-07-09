@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1531136059 source:c:\users\rapha\documents\github\tp-c\tp-c\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
